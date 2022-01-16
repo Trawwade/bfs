@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        welcome user
+    </h1>
+    <form action="">
+        <input type="text" id="username">
+        <input type="password" name="" id="password">
+        <input type="submit" value="signin" id="signin">
+        
+    </form>
+    <a href="./index.html">signup</a>
+    <script>
+        "use strict"
+        let fo = document.querySelector("form")
+        fo.onsubmit = verifyUser
+        
+        function verifyUser(e){
+        e.preventDefault()
+        let username=document.querySelector("#username").value
+        let pass= document.querySelector("#password").value
+        let users=JSON.parse(localStorage.getItem("users"))
+        if(users.hasOwnProperty(username)){
+            let userobj = users[username]
+            if (userobj["password"]==pass){
+                sessionStorage.setItem("signedin",username)
+                window.location.href="./home.html"
+            }
+            else{
+                alert("wrong password")
+            }
+            
+
+        }
+        else{
+            alert("user name not found, please sign up")
+        }
+        
+
+
+
+        }
+
+        console.log(localStorage.getItem("users"))
+        // let users = 
+        // {
+        //     aa:{
+        //         skill:"acountant", friends:["cc", "bb"]
+        //     },
+        //     bb:{
+        //         skill:"barber", friends:["dd"]
+        //     },
+        //     cc:{
+        //         skill:"carpenter", friends:["ee"]
+        //     },
+        //     dd:{
+        //         skill:"delivery", friends:[]
+        //     },
+        //     dc:{
+        //         skill:"delivery",friends:["ee"]
+        //     }
+        //     ,
+        //     ee:{
+        //         skill:"electrician", friends:["dc"]
+        //     }
+        // }
+    </script>
+    
+</body>
+</html>
