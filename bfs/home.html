@@ -1,0 +1,155 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="sform">
+        <input type="text" placeholder="search friends" id="sfriends" minlength="2" required >
+        <input type="submit" value="search" >
+    </form>
+
+    <form action="" id="skillsearch">
+        <input type="search" name="" id="sskills" placeholder="skill">
+        <input type="submit" value="search" >
+    </form>
+<div id="dive">
+
+</div>
+<div id="deetsdiv">
+
+</div>
+
+    <main></main>
+    <script>
+        // verifying user is signed in
+        "use strict"
+        if(!sessionStorage.getItem("signedin")){
+            alert("nobody is sgned in")
+            window.location.href= "./signin.html"
+        }
+    </script>
+    <script>
+        let sform = document.querySelector("#sform")
+        sform.onsubmit= finfFriend
+        function finfFriend(e){
+            e.preventDefault()
+            let sfriends = document.querySelector("#sfriends").value
+             findFriend(sfriends)
+
+        }       
+       function findFriend(search){
+           ma= document.querySelector("main")
+           ma.innerHTML=""
+           const users= JSON.parse(localStorage.getItem("users"))
+           for(let username in users){
+               if (username.includes(search))
+               {
+                   if(!(username==sessionStorage.getItem("signedin"))){
+                       let div = document.createElement("div")
+                       div.innerHTML=`
+                       ${username} <button class="addfriend" id="${username}">addfriend</button>`
+                       ma.append(div)
+
+                   }
+
+               }
+
+           }
+
+       }
+       document.body.addEventListener("click",e=>{
+           let clicked =e.target
+           if (clicked.classList.contains("addfriend")){
+               addtofriends(e)
+           }
+       })
+       function addtofriends(e){
+         let  clicked=e.target
+        const users= JSON.parse(localStorage.getItem("users"))
+
+        let user = sessionStorage.getItem("signedin")
+        users[user]
+        let friends = users[user].friends
+        if(!(friends.includes(clicked.id))){
+            users[user].friends.push(clicked.id)
+            localStorage.setItem("users", JSON.stringify(users))
+            alert("friend added")
+            console.log(users);
+
+        }
+
+           
+       }
+       let skillsearch= document.querySelector("#skillsearch")
+       skillsearch.onsubmit=(e)=>{
+           e.preventDefault()
+           let sskills=document.querySelector("#sskills").value
+           bfs(sessionStorage.getItem("signedin"),sskills,JSON.parse(localStorage.getItem("users")))
+       }
+
+
+
+
+       function bfs(start,skill,graph){
+        let frontier=[start]
+        let searched =[]
+        let parent={}
+        // if(grapth[start].skill==skill){
+        //     alert()
+        // }
+        while(frontier.length>0){
+            let da = frontier.shift()
+            let explore = graph[da]
+            if(explore.skill==skill){
+                let di = document.querySelector("#dive")
+                
+                let report = `${da} has ${explore.skill} skill <button id="moredeets" data-query="${da}">get more details</button>
+                ` 
+                di.innerHTML= report
+                return parent
+
+            }
+            else{
+                let friends= explore.friends
+                for (let friend of friends){
+                    if (!searched.includes(friend)){
+                        if (!parent.hasOwnProperty(friend)){
+                            parent[friend]=da
+                        }
+                        frontier.push(friend)
+
+
+
+                    }
+                }
+                searched.push(da) 
+            }
+        }
+        alert("skill not found in your friend tree")
+
+
+
+        }
+        // bfs(sessionStorage.getItem("signedin"),)
+    document.body.onclick=(e)=>{
+    let clicked= e.target
+    if(clicked.id=="moredeets"){
+       let query =clicked.getAttribute("data-query")
+        let deetsdiv=document.querySelector("#deetsdiv")
+        let users=JSON.parse(localStorage.getItem("users"))
+        let info = users[query]
+        deetsdiv.innerHTML=` <p>name:${query}</p><p>skill:${info.skill}<p/><p>friends:${info.friends}<img src="./avatar.jpg" width="200px">`
+
+
+
+    }
+
+    }
+
+    </script>
+    
+</body>
+</html>
